@@ -1,0 +1,52 @@
+#!/bin/bash
+
+ask() {
+read -p "Enter name or option: " askopt
+case "$(echo $askopt | awk '{print $1}')" in
+  list)
+    $askopt
+  ;;
+  *)
+    passer="$(eval echo "$"$askopt)"
+    if [ -z "$passer" ]
+      then addname "$askopt"
+    else
+      eval echo "$"$askopt
+    fi
+  ;;
+esac
+}
+
+list() {
+case $1 in
+  remove)
+    echo "removing $2"
+    unset $(eval echo $2)
+    list=$(echo "$list" | sed "s/$(echo $2)//g")
+  ;;
+  *)
+    select name in $list;
+     do
+      eval echo "$"$name
+      break;
+    done
+  ;;
+esac
+}
+
+addname() {
+echo "No entry for $1, please enter information"
+
+read -p "First Name: " firstname
+read -p "Last Name: " lastname
+read -p "City: " city
+read -p "State: " state
+eval $1="\"$(echo $firstname, $lastname, $city, $state)\""
+eval echo "$"$1
+list+=" $1"
+}
+
+while :
+do
+  ask
+done
