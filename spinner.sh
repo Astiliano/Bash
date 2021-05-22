@@ -104,6 +104,10 @@ echo_and_run() {
             echo -e "\r${text}(d): OK"
             return 0
             ;;
+        127)
+            echo -e "\r${text}(d): CMD_NOT_FOUND"
+            err "Check Command: ${result}"
+            ;;
         *)
             echo -e "\r${text}(d): FAIL"
             if [[ "${exit}" = "yes" ]]; then err "Check command [${result}] ${cmd}";fi
