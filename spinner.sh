@@ -106,7 +106,7 @@ echo_and_run() {
             ;;
         127)
             echo -e "\r${text}(d): CMD_NOT_FOUND"
-            err "Check Command: ${result}"
+            err "Check Command. Cmd Exit Status: ${result}"
             ;;
         *)
             echo -e "\r${text}(d): FAIL"
