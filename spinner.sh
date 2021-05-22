@@ -32,8 +32,8 @@ pid_file_cleanup() {
 echo_and_run() { 
     case "${1}" in
     -l|--long)
-    type="long"
-    shift
+        type="long"
+        shift
     ;;
     -s|--short)
         type="short"
@@ -74,6 +74,9 @@ echo_and_run() {
     if [[ "${type}" = "long" ]]; then
         pid_file_cleanup
         background &
+        until [[ -f "${pid_file}" ]]; do
+            sleep 0.5
+        done
         pid=$(grep "${cmd}" "${pid_file}" | awk '{print $1}')
 
         # While waiting for command to exit, (c) will be added to line.
@@ -101,13 +104,10 @@ echo_and_run() {
             echo -e "\r${text}(d): OK"
             return 0
             ;;
-        1)
-            echo -e "\r${text}(d): FAIL"
-            if [[ "${exit}" = "yes" ]]; then err "Check command ${cmd}";fi
-            return 1
-            ;;
         *)
-            err "Invalid status grabbed: ${result}"
+            echo -e "\r${text}(d): FAIL"
+            if [[ "${exit}" = "yes" ]]; then err "Check command [${result}] ${cmd}";fi
+            return 1
             ;;
         esac
     fi
