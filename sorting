@@ -1,3 +1,6 @@
+# Because of `grep -v` it will remove all instances instead of just 1, this would cause the ${new_list[@]} to never reach the size of ${list[@]}
+# Fix would be to just use sed to remove first instance: sed -e "0,/^${thing}$/d" ?
+
 ohno() {
   unset list old_list topthing topnum new_list
   list=( ${@} )
