@@ -1,0 +1,43 @@
+ohno() {
+  unset list old_list topthing topnum new_list
+  list=( ${@} )
+  old_list="${#}"
+
+  topthing="${list[0]}"
+  topnum=$(<<< "${topthing}" grep -oP "[0-9]{1,}" )
+  until [[ "${#new_list[@]}" -eq "${old_list}" ]]; do
+    echo "new_list[${#new_list[@]}]: ${new_list[@]}"
+    echo "list[${#list[@]}]: ${list[@]}"
+    echo "topthing: ${topthing}"
+    echo "kicked: ${kicked}"
+    if [[ -z "${kicked}" ]]; then
+      kicked="no"
+      echo "${kicked}"
+      topthing="${list[0]}"
+      topnum=$(<<< "${topthing}" grep -oP "[0-9]{1,}" )
+    fi
+    kicked="no"
+    for thing in "${list[@]}"; do
+      echo "thing: $thing"
+      thingnum=$(<<< "${thing}" grep -oP "[0-9]{1,}")
+      if ! [[ $(echo "${new_list[@]}" | grep -w "${thing}") ]]; then
+        echo "${thingnum} vs ${topnum}"
+        if [[ "${thingnum}" -lt "${topnum}" ]]; then
+          echo "old top = ${topthing}"
+          topthing="${thing}"
+          topnum="${thingnum}"
+          kicked="yes"
+          echo "new top = ${topthing}"
+        fi
+      fi
+    done
+      if [[ "${kicked}" == "no" ]]; then
+        new_list+=( "${topthing}" )
+        list=( $(printf "%s\n" "${list[@]}" | grep -vw "${topthing}") )
+        unset topthing topnum kicked
+      fi
+  done
+  echo -e "\n\n\n ### FINAL - sorted ###\n"
+  printf "%s\n" "${new_list[@]}"
+  echo
+}
