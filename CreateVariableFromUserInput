@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# a more basic example
+# read -p "enter variable name: " varname; read -p "enter variable content: " varcontent; eval "$(echo $varname='$varcontent')"; echo "now you can echo \$$varname"
+
 ask() {
 read -p "Enter name or option: " askopt
 case "$(echo $askopt | awk '{print $1}')" in
